@@ -74,10 +74,6 @@ namespace tareabasededatos
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            comboBoxRaza.Items.AddRange(razasDragonBall);
-        }
 
         private void Form1_Load_1(object sender, EventArgs e)
         {
