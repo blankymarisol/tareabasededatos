@@ -10,7 +10,7 @@ namespace tareabasededatos.DATA.DataAccess
 {
     internal class PersonajesBD
     {
-        private string connectionString = "Server=localhost;Database=bd_universidad;Uid=root;Pwd=inge26sistemas.";
+        string connectionString = "Server=localhost; Database=bd_universidad; Uid=root; Pwd=inge26sistemas.";
 
         public bool ProbarConexion()
         {
@@ -88,6 +88,28 @@ namespace tareabasededatos.DATA.DataAccess
             }
 
             return personaje;
+        }
+        public DataTable NombreBuscar(string nombre)
+        {
+            DataTable personaje2 = new DataTable();
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string sql = "SELECT * FROM personajes_dragon_ball WHERE nombre = @nombre";
+                using (MySqlCommand command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@nombre", nombre);
+
+                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+                    {
+                        adapter.Fill(personaje2);
+                    }
+                }
+            }
+
+            return personaje2;
         }
     }
 }

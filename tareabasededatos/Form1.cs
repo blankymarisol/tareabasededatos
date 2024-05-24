@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using tareabasededatos.DATA.DataAccess;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace tareabasededatos
 {
@@ -33,7 +34,7 @@ namespace tareabasededatos
             personaje = new PersonajesBD();
         }
 
-        private void buttonPrueba_Click(object sender, EventArgs e)
+        private void buttonPrueba_Click(object sender, EventArgs e) //boton para confirmar la conexion con la base de datos
         {
             if (personaje.ProbarConexion())
             {
@@ -46,17 +47,17 @@ namespace tareabasededatos
 
         }
 
-        private void buttonCargar_Click(object sender, EventArgs e)
+        private void buttonCargar_Click(object sender, EventArgs e) //boton para cargar los datos 
         {
             DataTable dt = personaje.LeerPersonajes();
             dataGridViewPersonajes.DataSource = dt;
         }
 
-        private void buttoncrear_Click(object sender, EventArgs e)
+        private void buttoncrear_Click(object sender, EventArgs e) //boton para crear un nuevo ingreso de datos
         {
             string nombre = textBoxnombre.Text;
-            string raza = comboBoxRaza.Text;
-            int nivelpoder = (int)numericUpDownpower.Value;
+            string raza = comboBoxraza.Text;
+            int nivelpoder = (int)numericUpDown1.Value;
             int respuesta = personaje.CrearPersonaje(nombre, raza, nivelpoder);
             if (respuesta > 0)
             {
@@ -69,43 +70,85 @@ namespace tareabasededatos
             }
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-
+            comboBoxraza.Items.AddRange(razasDragonBall);
         }
 
-
-        private void Form1_Load_1(object sender, EventArgs e)
+        private void Buscarporid() 
         {
-            comboBoxRaza.Items.AddRange(razasDragonBall);
-        }
-
-        private void BuscarPorId()
-        {
-            int idPersonajeBuscar = int.Parse(label1.Text);
-            DataTable personajeEncontrado = personaje.BuscarPersonajePorId(idPersonajeBuscar);
-            if (personajeEncontrado.Rows.Count > 0)
+            int idpersonajebuscar = int.Parse(textboxid.Text);
+            DataTable personajeencontrado = personaje.BuscarPersonajePorId(idpersonajebuscar);
+            if (personajeencontrado.Rows.Count > 0)
             {
-                string nombre = personajeEncontrado.Rows[0]["nombre"].ToString();
-                string raza = personajeEncontrado.Rows[0]["raza"].ToString();
-                int nivelpoder = int.Parse(personajeEncontrado.Rows[0]["nivel_poder"].ToString());
-
+                string nombre = personajeencontrado.Rows[0]["nombre"].ToString();
+                string raza = personajeencontrado.Rows[0]["raza"].ToString();
+                int nivelPoder = int.Parse(personajeencontrado.Rows[0]["nivel_poder"].ToString());
+                DateTime FechaCreacion = DateTime.Parse(personajeencontrado.Rows[0]["Fecha_Creacion"].ToString());
+                string historia = personajeencontrado.Rows[0]["Historia"].ToString();
                 textBoxnombre.Text = nombre;
-                comboBoxRaza.Text = raza;
-                numericUpDownpower.Value = nivelpoder;
+                comboBoxraza.Text = raza;
+                numericUpDown1.Value = nivelPoder;
+                dateTimePicker1.Value = FechaCreacion;
+                textBoxHistoria.Text = historia;
+            }
 
+            else
+            {
+                MessageBox.Show("no se encontro el codigo");
+            }
+        }
+
+        private void BuscarNombre()
+        {
+            string nombrePersonajeBuscar = textBoxnombre.Text;
+            DataTable nombreEncontrado = personaje.NombreBuscar(nombrePersonajeBuscar);
+
+            if (nombreEncontrado.Rows.Count > 0)
+            {
+                int Id = int.Parse(nombreEncontrado.Rows[0]["id"].ToString());
+                string raza = nombreEncontrado.Rows[0]["raza"].ToString();
+                int nivelPoder = int.Parse(nombreEncontrado.Rows[0]["nivel_poder"].ToString());
+                DateTime FechaCreacion = DateTime.Parse(nombreEncontrado.Rows[0]["Fecha_Creacion"].ToString());
+                string historia = nombreEncontrado.Rows[0]["Historia"].ToString();
+                textboxid.Text = Id.ToString();
+                comboBoxraza.Text = raza;
+                numericUpDown1.Value = nivelPoder;
+                dateTimePicker1.Value = FechaCreacion;
+                textBoxHistoria.Text = historia;
+            }
+            else
+            {
+                MessageBox.Show("No se encontró el nombre.");
             }
         }
         private void buttonbuscar_Click(object sender, EventArgs e)
         {
-            BuscarPorId();
+            Buscarporid();
         }
 
-        private void id_Leave(object sender, EventArgs e)
+        private void comboBoxraza_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BuscarPorId();
+
         }
 
-        
+        private void button1_Click(object sender, EventArgs e)
+        {
+            BuscarNombre();
+        }
+
+        private void buttonLimpiar_Click(object sender, EventArgs e)
+        {
+            comboBoxraza.Text = " ";
+            textBoxHistoria.Text = "";
+            textboxid.Text = "";
+            numericUpDown1.Value = numericUpDown1.Minimum;
+            textBoxnombre.Text = "";
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
